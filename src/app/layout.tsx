@@ -26,8 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable}${geistMono.variable} antialiased`}
       >
+        <script id="mamo-script" src="checkout-inline.min.js" async />
         {children}
       </body>
     </html>

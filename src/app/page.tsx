@@ -1,64 +1,132 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+
+declare global {
+  interface IframeStyles {
+    backgroundColor: string;
+    width: string;
+    height: string;
+    border: string;
+    display: string;
+    zIndex: number;
+  }
+
+  interface MamoPayOptions {
+    rootId: string;
+    paymentLinkUrl: string;
+    iframeId?: string;
+  }
+
+  interface IncomingEvent {
+    type: "data";
+    data: {
+      prefilledCustomer?: {
+        first_name?: string;
+        last_name?: string;
+        email?: string;
+      };
+      amount?: number;
+      currency?: string;
+      external_id?: string;
+    };
+  }
+
+  class MamoPay {
+    constructor(options: MamoPayOptions);
+    addIframeToWebsite(): void;
+    sendDataToIframe(data: IncomingEvent): void;
+  }
+
+  interface Window {
+    MamoPay: typeof MamoPay;
+  }
+}
+
 export default function Home() {
+  const mamoRef = useRef<MamoPay>();
+  const [isReady, setIsReady] = useState(false);
+
+  const queryParams = useSearchParams();
+
+  useEffect(() => {
+    const paymentLinkUrl = queryParams.get("paymentLinkUrl");
+
+    if (!paymentLinkUrl) return;
+
+    const initializeMamo = () => {
+      if (window.MamoPay) {
+        mamoRef.current = new window.MamoPay({
+          rootId: "mamo-checkout",
+          paymentLinkUrl,
+        });
+        console.log("mamoRef.current", mamoRef.current);
+
+        mamoRef.current.addIframeToWebsite();
+
+        mamoRef.current.sendDataToIframe({
+          type: "data",
+          data: {
+            amount: 50,
+            currency: "USD",
+            prefilledCustomer: {
+              first_name: "John",
+              last_name: "Doe",
+              email: "john.doe@example.com",
+            },
+          },
+        });
+
+        setIsReady(true);
+      }
+    };
+
+    // Check if the script is already loaded
+    if (window.MamoPay) {
+      initializeMamo();
+    } else {
+      // Poll for the script to be loaded
+      const interval = setInterval(() => {
+        if (window.MamoPay) {
+          clearInterval(interval);
+          initializeMamo();
+        }
+      }, 100);
+
+      return () => clearInterval(interval);
+    }
+  }, []);
+
+  const sendData = () => {
+    if (!mamoRef.current || !isReady) return;
+
+    mamoRef.current.sendDataToIframe({
+      type: "data",
+      data: {
+        amount: 50,
+        currency: "USD",
+        prefilledCustomer: {
+          first_name: "John",
+          last_name: "Doe",
+          email: "john.doe@example.com",
+        },
+      },
+    });
+  };
+
   return (
-    <main className="h-screen w-full bg-white p-20">
+    <main className="h-screen w-full bg-white px-20 pt-40">
       <button
+        className="rounded-md bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
         type="button"
-        className="rounded-md bg-blue-500 p-2 text-white"
-        onClick={() => {
-          const iframe = document.querySelector<HTMLIFrameElement>(
-            "#iframe-mamo-checkout",
-          );
-          iframe?.contentWindow?.postMessage(
-            {
-              type: "init",
-              origin: window.location.origin,
-            },
-            "https://f4.dev.business.mamopay.com",
-          );
-        }}
+        onClick={sendData}
+        disabled={!isReady}
       >
-        Emit event
+        Send Data
       </button>
-      <iframe
-        className="h-full w-full"
-        src="https://f4.dev.business.mamopay.com/permanent-widget/pay/boxpay-6aa67f"
-        sandbox="allow-scripts allow-forms allow-popups allow-same-origin allow-top-navigation allow-top-navigation-by-user-activation"
-        title="Boxpay"
-        id="iframe-mamo-checkout"
-        allow="payment"
-        onLoad={() => {
-          const iframe = document.querySelector<HTMLIFrameElement>(
-            "#iframe-mamo-checkout",
-          );
 
-          iframe?.contentWindow?.postMessage(
-            {
-              type: "handshake",
-              origin: window.location.origin,
-            },
-            "https://f4.dev.business.mamopay.com",
-          );
-
-          iframe?.contentWindow?.postMessage(
-            {
-              type: "initial-data",
-              data: {
-                amount: 50,
-                currency: "USD",
-                prefilledCustomer: {
-                  firstName: "John",
-                  lastName: "Doe",
-                  email: "john.doe@example.com",
-                },
-              },
-            },
-            "https://f4.dev.business.mamopay.com",
-          );
-        }}
-        allowTransparency={true}
-      />
+      <div id="mamo-checkout" className="h-full w-full" />
     </main>
   );
 }
