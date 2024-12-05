@@ -19,24 +19,10 @@ declare global {
     iframeId?: string;
   }
 
-  interface IncomingEvent {
-    type: "data";
-    data: {
-      prefilledCustomer?: {
-        first_name?: string;
-        last_name?: string;
-        email?: string;
-      };
-      amount?: number;
-      currency?: string;
-      external_id?: string;
-    };
-  }
-
   class MamoPay {
     constructor(options: MamoPayOptions);
     addIframeToWebsite(): void;
-    sendDataToIframe(data: IncomingEvent): void;
+    sendDataToIframe(data: unknown): void;
   }
 
   interface Window {
@@ -52,6 +38,11 @@ export default function Home() {
 
   useEffect(() => {
     const paymentLinkUrl = queryParams.get("paymentLinkUrl");
+    const amount = queryParams.get("amount");
+    const currency = queryParams.get("currency");
+    const first_name = queryParams.get("first_name");
+    const last_name = queryParams.get("last_name");
+    const email = queryParams.get("email");
 
     if (!paymentLinkUrl) return;
 
@@ -68,12 +59,12 @@ export default function Home() {
         mamoRef.current.sendDataToIframe({
           type: "data",
           data: {
-            amount: 50,
-            currency: "USD",
+            amount: Number(amount),
+            currency: currency || undefined,
             prefilledCustomer: {
-              first_name: "John",
-              last_name: "Doe",
-              email: "john.doe@example.com",
+              email: email || undefined,
+              first_name: first_name || undefined,
+              last_name: last_name || undefined,
             },
           },
         });
@@ -96,7 +87,7 @@ export default function Home() {
 
       return () => clearInterval(interval);
     }
-  }, []);
+  }, [queryParams]);
 
   const sendData = () => {
     if (!mamoRef.current || !isReady) return;
