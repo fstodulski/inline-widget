@@ -31,7 +31,7 @@ declare global {
 }
 
 export default function Home() {
-  const mamoRef = useRef<MamoPay>();
+  const mamoRef = useRef<MamoPay>(null);
   const [isReady, setIsReady] = useState(false);
 
   const queryParams = useSearchParams();
