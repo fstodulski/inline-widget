@@ -107,7 +107,7 @@ export default function Home() {
   };
 
   return (
-    <main className="h-screen w-full bg-white px-20 pt-40">
+    <main className="h-screen w-full space-y-4 bg-white px-20 pt-40">
       <button
         className="rounded-md bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
         type="button"
