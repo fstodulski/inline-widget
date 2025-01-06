@@ -29,7 +29,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable}${geistMono.variable} antialiased`}
       >
-        <script id="mamo-script" src="checkout-inline.min.js" async />
+        <script
+          id="mamo-script"
+          src="https://assets.mamopay.com/beta/checkout-permanent-2.1.0.min.js"
+          async
+        />
         <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
       </body>
     </html>

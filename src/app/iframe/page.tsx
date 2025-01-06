@@ -4,6 +4,7 @@ export default function IframePage() {
   return (
     <div className="h-full w-full">
       <iframe
+        // @ts-ignore
         crossOrigin="same-origin"
         className="h-full min-h-screen w-full"
         allowtransparency="true"
