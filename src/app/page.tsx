@@ -23,6 +23,7 @@ declare global {
     constructor(options: MamoPayOptions);
     addIframeToWebsite(): void;
     sendDataToIframe(data: unknown): void;
+    triggerPayment(): void;
   }
 
   interface Window {
@@ -106,16 +107,33 @@ export default function Home() {
     });
   };
 
+  const triggerPayment = () => {
+    if (!mamoRef.current || !isReady) return;
+
+    mamoRef.current.triggerPayment();
+  };
+
   return (
     <main className="h-screen w-full space-y-4 bg-white px-20 pt-40">
-      <button
-        className="rounded-md bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
-        type="button"
-        onClick={sendData}
-        disabled={!isReady}
-      >
-        Send Data
-      </button>
+      <div className="flex gap-4">
+        <button
+          className="rounded-md bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
+          type="button"
+          onClick={sendData}
+          disabled={!isReady}
+        >
+          Send Data
+        </button>
+
+        <button
+          className="rounded-md bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
+          type="button"
+          onClick={triggerPayment}
+          disabled={!isReady}
+        >
+          Trigger payment
+        </button>
+      </div>
 
       <div id="mamo-checkout" className="h-full w-full" />
     </main>
