@@ -37,7 +37,7 @@ export default function RootLayout({
           async
         />
         <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-        <Toaster />
+        <Toaster position="top-right" />
       </body>
     </html>
   );
