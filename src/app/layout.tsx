@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { type ReactNode, Suspense } from "react";
@@ -36,6 +37,7 @@ export default function RootLayout({
           async
         />
         <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+        <Toaster />
       </body>
     </html>
   );

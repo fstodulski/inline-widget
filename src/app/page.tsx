@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 declare global {
   interface IframeStyles {
@@ -63,9 +64,8 @@ export default function Home() {
           paymentLinkUrl,
           onFormValid: () => {
             console.log("onFormValid");
-          },
-          onFormValidDebounced: () => {
-            console.log("onFormValidDebounced");
+
+            toast.success("Form is valid");
           },
           onFormLoaded: () => {
             console.log("onFormLoaded");
@@ -133,8 +133,6 @@ export default function Home() {
 
     mamoRef.current.triggerPayment();
   };
-
-  useEffect(() => {}, []);
 
   return (
     <main className="h-screen w-full space-y-4 bg-white px-20 pt-40">
