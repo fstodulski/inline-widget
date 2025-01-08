@@ -17,6 +17,15 @@ declare global {
     rootId: string;
     paymentLinkUrl: string;
     iframeId?: string;
+    onPaymentFailed?: () => void;
+    onPaymentComplete?: () => void;
+    onPaymentTriggered?: () => void;
+
+    // Form events
+    onFormValid?: () => void;
+    onFormValidDebounced?: () => void;
+    onFormLoaded?: () => void;
+    onFormSubmitted?: () => void;
   }
 
   class MamoPay {
@@ -52,6 +61,18 @@ export default function Home() {
         mamoRef.current = new window.MamoPay({
           rootId: "mamo-checkout",
           paymentLinkUrl,
+          onFormValid: () => {
+            console.log("onFormValid");
+          },
+          onFormValidDebounced: () => {
+            console.log("onFormValidDebounced");
+          },
+          onFormLoaded: () => {
+            console.log("onFormLoaded");
+          },
+          onFormSubmitted: () => {
+            console.log("onFormSubmitted");
+          },
         });
         console.log("mamoRef.current", mamoRef.current);
 
@@ -112,6 +133,8 @@ export default function Home() {
 
     mamoRef.current.triggerPayment();
   };
+
+  useEffect(() => {}, []);
 
   return (
     <main className="h-screen w-full space-y-4 bg-white px-20 pt-40">

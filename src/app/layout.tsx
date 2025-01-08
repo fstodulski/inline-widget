@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Suspense } from "react";
+import { type ReactNode, Suspense } from "react";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -31,8 +31,8 @@ export default function RootLayout({
       >
         <script
           id="mamo-script"
-          // src="https://assets.mamopay.com/beta/checkout-permanent-2.1.0.min.js"
-          src="http://localhost:3001/checkout-permanent.min.js"
+          src="https://assets.mamopay.com/beta/checkout-permanent-2.1.0.min.js"
+          // src="http://localhost:3001/checkout-permanent.min.js"
           async
         />
         <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
