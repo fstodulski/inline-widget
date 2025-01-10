@@ -88,6 +88,7 @@ export default function Home() {
               first_name: first_name || undefined,
               last_name: last_name || undefined,
             },
+            external_id: "123",
           },
         });
 
@@ -124,6 +125,7 @@ export default function Home() {
           last_name: "Doe",
           email: "john.doe@example.com",
         },
+        external_id: "123",
       },
     });
   };
