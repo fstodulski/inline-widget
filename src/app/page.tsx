@@ -18,15 +18,21 @@ declare global {
     rootId: string;
     paymentLinkUrl: string;
     iframeId?: string;
+
+    // Payment events
     onPaymentFailed?: () => void;
     onPaymentComplete?: () => void;
+    onPaymentAborted?: () => void;
     onPaymentTriggered?: () => void;
 
     // Form events
     onFormValid?: () => void;
-    onFormValidDebounced?: () => void;
+    onFormInvalid?: () => void;
     onFormLoaded?: () => void;
     onFormSubmitted?: () => void;
+
+    // Iframe events
+    onIframeLoaded?: (data: Record<string, unknown>) => void;
   }
 
   class MamoPay {
@@ -67,11 +73,33 @@ export default function Home() {
 
             toast.success("Form is valid");
           },
+          onFormInvalid: () => {
+            console.log("onFormInvalid");
+            toast.error("Form is invalid");
+          },
           onFormLoaded: () => {
             console.log("onFormLoaded");
           },
           onFormSubmitted: () => {
             console.log("onFormSubmitted");
+          },
+          onPaymentFailed: () => {
+            console.log("onPaymentFailed");
+            toast.error("Payment failed");
+          },
+          onPaymentComplete: () => {
+            console.log("onPaymentComplete");
+            toast.success("Payment complete");
+          },
+          onPaymentTriggered: () => {
+            console.log("onPaymentTriggered");
+          },
+          onPaymentAborted: () => {
+            console.log("onPaymentAborted");
+            toast.error("Payment aborted");
+          },
+          onIframeLoaded: (data) => {
+            console.log("onIframeLoaded", data);
           },
         });
         console.log("mamoRef.current", mamoRef.current);
